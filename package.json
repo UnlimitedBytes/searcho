@@ -1,0 +1,16 @@
+{
+  "name": "searcho-app",
+  "version": "1.0.0",
+  "description": "Searcho AI Agent Application",
+  "scripts": {
+    "setup": "npm install --prefix server && npm install --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm run build && npm start --prefix server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mathjs": "^15.1.0",
+    "quickjs-emscripten": "^0.31.0"
+  }
+}
