@@ -147,6 +147,11 @@ class Agent {
   }
 
   async generateResponse(userQuery, onStatusUpdate) {
+    const startTime = Date.now();
+    let apiTime = 0;
+    let inputTokens = 0;
+    let outputTokens = 0;
+
     const updateStatus = (status) => {
       if (onStatusUpdate) onStatusUpdate(this.id, status);
     };
@@ -176,15 +181,22 @@ class Agent {
         turns++;
 
         // Call LLM
+        const apiStart = Date.now();
         const completion = await this.client.chat.completions.create({
           model: this.model,
           messages: messages,
           tools: tools
         });
+        apiTime += (Date.now() - apiStart);
 
         const responseMessage = completion.choices[0].message;
         const responseContent = responseMessage.content;
         const usage = completion.usage;
+
+        if (usage) {
+            inputTokens += usage.prompt_tokens || 0;
+            outputTokens += usage.completion_tokens || 0;
+        }
 
         // Add the assistant's response to the conversation history
         messages.push(responseMessage);
@@ -324,15 +336,42 @@ class Agent {
             }
         }
 
-        return finalResponse;
+        return {
+            content: finalResponse,
+            stats: {
+                rounds: turns,
+                inputTokens,
+                outputTokens,
+                runtime: Date.now() - startTime,
+                apiTime
+            }
+        };
       }
 
-      return "I apologize, but I was unable to generate a verified response within the limit.";
+      return {
+          content: "I apologize, but I was unable to generate a verified response within the limit.",
+          stats: {
+              rounds: turns,
+              inputTokens,
+              outputTokens,
+              runtime: Date.now() - startTime,
+              apiTime
+          }
+      };
 
     } catch (error) {
       updateStatus("Error");
       logger.error(`Agent ${this.id} error: ${error.message}`);
-      return "I encountered an error while processing your request.";
+      return {
+          content: "I encountered an error while processing your request.",
+          stats: {
+              rounds: turns,
+              inputTokens,
+              outputTokens,
+              runtime: Date.now() - startTime,
+              apiTime
+          }
+      };
     }
   }  async vote(prompt, responses, onStatusUpdate) {
     const updateStatus = (status) => {

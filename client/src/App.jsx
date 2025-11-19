@@ -55,6 +55,29 @@ const CodeBlock = ({ node, inline, className, children, ...props }) => {
   return <code className={className} {...props}>{children}</code>
 }
 
+const StatsDisplay = ({ stats }) => {
+  if (!stats) return null;
+  return (
+    <div style={{
+      display: 'flex',
+      gap: '15px',
+      fontSize: '0.85em',
+      color: '#aaa',
+      marginTop: '10px',
+      flexWrap: 'wrap',
+      background: 'rgba(0,0,0,0.2)',
+      padding: '8px',
+      borderRadius: '4px'
+    }}>
+      <span>🔄 Rounds: {stats.rounds}</span>
+      <span>📥 In: {stats.inputTokens}</span>
+      <span>📤 Out: {stats.outputTokens}</span>
+      <span>⏱️ Total: {(stats.runtime / 1000).toFixed(2)}s</span>
+      <span>🤖 API: {(stats.apiTime / 1000).toFixed(2)}s</span>
+    </div>
+  );
+};
+
 function App() {
   const [query, setQuery] = useState('')
   const [result, setResult] = useState(null)
@@ -139,7 +162,8 @@ function App() {
       {result && (
         <div className="card">
           <h2>Best Answer (Winner: Option {result.winnerIndex})</h2>
-                    <div className="response-text">
+          {result.allStats && <StatsDisplay stats={result.allStats[result.winnerIndex - 1]} />}
+          <div className="response-text">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{ pre: Pre, code: CodeBlock }}
@@ -166,6 +190,7 @@ function App() {
                       {result.votes[idx]} Votes
                     </span>
                   </div>
+                  {result.allStats && <StatsDisplay stats={result.allStats[idx]} />}
                   <div className="response-text" style={{fontSize: '0.95em', opacity: 0.9}}>
                     <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ pre: Pre, code: CodeBlock }}>{resp}</ReactMarkdown>
                   </div>
@@ -173,6 +198,7 @@ function App() {
               ))}
             </div>
           </details>
+          <StatsDisplay stats={result.stats} />
         </div>
       )}
     </>
