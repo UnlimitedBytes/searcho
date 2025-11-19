@@ -61,7 +61,10 @@ app.post('/api/query', async (req, res) => {
     // 2. Generate Responses (Parallel)
     logger.info('Starting 5 agents to generate responses...');
     const responsePromises = agents.map(agent => agent.generateResponse(query, sendUpdate));
-    const responses = await Promise.all(responsePromises);
+    const agentResults = await Promise.all(responsePromises);
+
+    const responses = agentResults.map(r => r.content);
+    const allStats = agentResults.map(r => r.stats);
 
     logger.info('All agents have generated responses.');
     responses.forEach((r, i) => logger.info(`Response ${i + 1}: ${r.substring(0, 50)}...`));
@@ -98,6 +101,7 @@ app.post('/api/query', async (req, res) => {
       query,
       bestResponse,
       allResponses: responses,
+      allStats,
       votes: voteCounts,
       winnerIndex: winnerIndex + 1
     });
