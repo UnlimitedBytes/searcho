@@ -121,7 +121,7 @@ class Agent {
       apiKey: apiKey,
       baseURL: "https://openrouter.ai/api/v1"
     });
-    this.model = "openrouter/sherlock-think-alpha"; // Default model, can be changed
+    this.model = process.env.OPENROUTER_MODEL || "openrouter/sherlock-think-alpha";
     this.contextWindowSize = contextWindowSize;
   }
 

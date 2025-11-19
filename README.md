@@ -35,6 +35,7 @@ Get up and running in minutes!
     cd server
     cp .env.example .env
     # Edit .env and add your OPENROUTER_API_KEY
+    # Optionally set OPENROUTER_MODEL (defaults to openrouter/sherlock-think-alpha)
     ```
 
 3.  **Install & Run**
