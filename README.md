@@ -70,26 +70,4 @@ Want to contribute or modify the code? Run the client and server separately for 
 
 ## 📄 License
 
-MIT
-
-
-2.  **Start the Client**:
-    Open a second terminal and run:
-    ```bash
-    cd client
-    npm run dev
-    ```
-    The client will start on http://localhost:3000. It is configured to proxy API requests to the server on port 3001.
-
-## Features
-
-*   **5 AI Agents**: Each agent independently generates a response.
-*   **Web Search**: Agents can choose to search the web using DuckDuckGo.
-*   **Voting System**: Agents vote on the best response.
-*   **Logging**: Detailed logs are saved to `server/logs/app.log` and displayed in the server console.
-
-## Project Structure
-
-*   `client/`: React frontend (Vite).
-*   `server/`: Node.js/Express backend.
-*   `prompts/`: System prompts used by the AI agents.
+[Apache 2.0](LICENSE)
